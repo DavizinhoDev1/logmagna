@@ -32,13 +32,13 @@ export default function LoginPage() {
 
   function validar() {
     const novos: Erros = {};
-    if (!email) novos.email = "Informe seu e-mail corporativo.";
-    else if (!/^\S+@\S+\.\S+$/.test(email))
+    const emailLimpo = email.trim();
+
+    if (!emailLimpo) novos.email = "Informe seu e-mail corporativo.";
+    else if (!/^\S+@\S+\.\S+$/.test(emailLimpo))
       novos.email = "Digite um e-mail válido.";
 
-    if (!senha) novos.senha = "Informe sua senha.";
-    else if (senha.length < 6)
-      novos.senha = "A senha deve ter pelo menos 6 caracteres.";
+    if (!senha) novos.senha = "Informe a senha única.";
 
     setErros(novos);
     return Object.keys(novos).length === 0;
@@ -49,14 +49,14 @@ export default function LoginPage() {
     setMensagem(null);
     if (!validar()) return;
 
-    if (login(email, senha, lembrar)) {
+    if (login(email.trim(), senha, lembrar)) {
       setMensagem({
         tipo: "sucesso",
         texto: "Login realizado! Redirecionando...",
       });
-      setTimeout(() => router.push("/dashboard"), 800);
+      router.push("/dashboard");
     } else {
-      setMensagem({ tipo: "erro", texto: "E-mail ou senha incorretos." });
+      setMensagem({ tipo: "erro", texto: "E-mail ou senha única incorretos." });
     }
   }
 
@@ -121,7 +121,7 @@ export default function LoginPage() {
             {/* Senha */}
             <div>
               <label htmlFor="senha" className="mb-2 block text-sm font-medium">
-                Senha
+                Senha única
               </label>
               <div className="relative">
                 <Lock
@@ -131,7 +131,7 @@ export default function LoginPage() {
                 <input
                   id="senha"
                   type={mostrarSenha ? "text" : "password"}
-                  placeholder="Digite sua senha"
+                  placeholder="Digite a senha única"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   aria-invalid={!!erros.senha}
